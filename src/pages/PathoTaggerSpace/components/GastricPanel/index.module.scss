@@ -1,0 +1,72 @@
+.panel-container {
+  position: fixed;
+  top: 0;
+  right: 0;/* 确保面板紧贴右侧 */
+  width: 35%; /* 设置宽度为35% */
+  height: 100vh; /* 高度为100%视口高度 */
+  background-color: #ffffff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* 防止内容溢出 */
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+
+  &.hidden {
+    transform: translateX(100%);
+  }
+
+  &.visible {
+    transform: translateX(0);
+  }
+}
+
+.panel-content {
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%; /* 填满整个面板高度 */
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-panel-button {
+  position: absolute;
+  top: 20px;
+  left: -40px; /* 将按钮移动到面板外侧右侧 */
+  z-index: 1001;
+}
+
+.tile {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  height: 100%; /* 确保每个瓦片高度自适应 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1; /* 使内容区域占满剩余空间 */
+}
+
+.tile-image {
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 4px;
+  object-fit: contain; /* 确保图片不变形 */
+}
+
+.tile-buttons {
+  margin-top: 10px;
+}
+
+.ant-pagination {
+  margin-bottom: 20px;
+}
+
+
+

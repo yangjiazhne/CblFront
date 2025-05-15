@@ -1,0 +1,30 @@
+.footerWrap {
+    background-color: #373a3c;
+    color: #fff;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    position: absolute; /* 调整为绝对定位 */
+    bottom: 0; /* 距离底部 3% */
+    left: 0; /* 紧贴左侧 */
+    width: 100%; /* 宽度占满屏幕 */
+    height: 5%; /* 高度为 5% */
+    padding: 0;
+
+    .footerMenu {
+        display: flex; /* 使用 flex 布局 */
+        justify-content: center; /* 水平居中 */
+        align-items: center; /* 垂直居中 */
+        gap: 20px; /* 项目之间的间距 */
+        color: #fff;
+
+        .footerItem {
+            font-weight: 700;
+            cursor: pointer;
+            margin: 0; /* 清除之前多余的 margin */
+            &:hover {
+                color: #4183c4;
+            }
+        }
+    }
+}
