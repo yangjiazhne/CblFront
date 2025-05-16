@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Tabs, Button, message, Col, Radio, Row, Divider, Checkbox, Space, Grid, Input, Tag, Select} from 'antd';
+import {Tabs, Button, message, Col, Radio, Row, Divider, Checkbox, Space, Grid, Input, Tag, Select, InputNumber } from 'antd';
 import {LeftOutlined, RightOutlined} from '@ant-design/icons';
 import PanelHeader from './PanelHeader';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,7 +12,6 @@ import { use } from 'react';
 const { TextArea } = Input;
 
 const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) => {
-    const organ = localStorage.getItem('organ');
     const { projectDetails } = useSelector(state => state.project);
 
     const [slideCategory, setSlideCategory] = useState(projectDetails.category)
@@ -20,12 +19,12 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
     const order = ['ASC-US', 'ASC-H', 'LSIL', 'HSIL', 'AGC'];
 
     const category = projectDetails.subCls.split(',')
-    if(organ === '宫颈'){
-        category.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-    }
 
     const [isGlobalHM, setIsGlobalHM] = useState(true)
     const [currentTile, setCurrentTile] = useState({})
+
+    const [lowThre, setLowThre] = useState(0.40)
+    const [highThre, setHighThre] = useState(0.70)
 
     const ChangeTile = (tile) => {
         setCurrentTile(tile)
@@ -449,8 +448,6 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                                 </Button>
 
                             </div>
-
-                            
                             <Button
                                     type="text"
                                     size={'middle'}
@@ -464,11 +461,57 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                                     }}
                                 />
                         </div>
+                        <div flex="auto" style={{ 
+                                paddingLeft:20,
+                                display: 'flex',
+                                alignItems: 'center',
+                                padding: '5px 8px',}}>
+                            <div style={{
+                                fontSize: 16,
+                                color: '#2D3748',
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap'
+                            }}>
+                                阈值调整:
+                            </div>
+                            <Tag style={{fontSize: 15, padding: '5px 8px', marginLeft: 28}}>预测: 0.80</Tag>
+                            <InputNumber
+                                min={0}
+                                max={1}
+                                style={{
+                                    marginLeft: 8,
+                                    marginRight: 2,
+                                    width: 70
+                                }}
+                                step={0.01}
+                                value={lowThre}
+                                onChange={(value) => setLowThre(value)}
+                            />
+                            <span>——</span>
+                            <InputNumber
+                                min={0}
+                                max={1}
+                                style={{
+                                    marginRight: 16,
+                                    marginLeft: 2,
+                                    width: 70
+                                }}
+                                step={0.01}
+                                value={highThre}
+                                onChange={(value) => setHighThre(value)}
+                            />
+                            <Button
+                                type="primary"
+                                
+                            >
+                                修改
+                            </Button>
+                        </div>
                         <Col flex="auto" style={{ 
                                     paddingLeft:20,
                                     display: 'flex',
                                     alignItems: 'center',
-                                    padding: '5px 8px',}}>
+                                    padding: '0 8px',}}>
                             <Space size={8}>
                                 <Col style={{
                                     fontSize: 16,
@@ -576,7 +619,7 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                                 </Radio.Group>
                             </Space>
                         </Col>
-                        {organ === '前列腺' && projectDetails.category === '阳性' && (
+                        { projectDetails.category === '阳性' && (
                             <Col flex="auto" style={{ margin: '0px 0' }}>
                                 <Space size={8}>
                                     <Col style={{
@@ -661,86 +704,8 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                                 </Space>
                             </Col>
                         )}
-
-
-                        { organ !== "前列腺" && (
-                           <Col flex="auto" style={{marginTop: '15px'}}>
-                            <Row gutter={[16, 16]} align="top">
-                                {/* 左侧标题 */}
-                                <Col span={5} style={{ fontSize: 17, color: '#2D3748', fontWeight: 500, letterSpacing: 0.2  }}>
-                                    {organ === '前列腺' ? 'Gleason评分' : '诊断类别'}
-                                </Col>
-                                
-                                {/* 右侧复选框组 */}
-                                <Col span={19}>
-                                <Row gutter={[16, 16]} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-                                    <Checkbox.Group
-                                        value={selectCategory}
-                                        onChange={categoryChange}
-                                        style={{ display: 'flex', flexWrap: 'wrap' }} // 使checkbox能够换行
-                                    >
-                                        {category.map(score => (
-                                            <Col key={score} span={8}> {/* 每行最多显示3个checkbox，调整span的值可以控制列数 */}
-                                                <Checkbox
-                                                    value={score.toString()}
-                                                    style={{
-                                                        padding: '6px 12px',
-                                                        paddingRight: '4px',
-                                                        backgroundColor: selectCategory.includes(score.toString())
-                                                            ? `${getScoreColor(score)}1a`
-                                                            : 'transparent',
-                                                        borderRadius: 6,
-                                                        transition: 'all 0.2s',
-                                                        fontSize: 17,
-                                                        marginTop: '5px'
-                                                    }}
-                                                >
-                                                    <span
-                                                        style={{
-                                                            color: getScoreColor(score),
-                                                            fontWeight: 600,
-                                                            position: 'relative',
-                                                        }}
-                                                    >
-                                                        {score}
-                                                    </span>
-                                                </Checkbox>
-                                            </Col>
-                                        ))}
-                                    </Checkbox.Group>
-                                    
-                                    <Col span={8}>
-                                        <Checkbox
-                                            onChange={categoryAllChange}
-                                            indeterminate={indeterminate}
-                                            checked={checkAll}
-                                            style={{
-                                                '& .ant-checkbox': { display: 'none' },
-                                                '& .ant-checkbox-wrapper': { paddingLeft: 24 },
-                                            }}
-                                        >
-                                            <span
-                                                style={{
-                                                    color: '#4A5568',
-                                                    fontSize: 17,
-                                                    fontWeight: 500,
-                                                    position: 'relative',
-                                                    marginTop: 8,
-                                                }}
-                                            >
-                                                全选
-                                            </span>
-                                        </Checkbox>
-                                    </Col>
-                                </Row>
-
-                                </Col>
-                            </Row>
-                        </Col>
                         
-                        )}
-
-                        { organ === '前列腺' && projectDetails.category==='阳性' && (
+                        { projectDetails.category==='阳性' && (
                             <>
                             <Col span={50}>
                                 <div style={{
@@ -866,10 +831,6 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                         {/*    }}*/}
                         {/*    style={{ marginTop: 16, marginBottom: 16}}*/}
                         {/*/>*/}
-
-
-
-
 
                         {/*{projectDetails.category === '阳性' && (*/}
                         {/*    <>*/}
@@ -1050,7 +1011,7 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
 
                         </div>
 
-                        {(isGlobalHM || organ !== '宫颈' )&& (
+                        {isGlobalHM && (
                             <img
                                 ref={imgRef}
                                 src={heatmapUrl}
@@ -1068,7 +1029,7 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                             />
                         )}
 
-                        {!isGlobalHM && organ === '宫颈' && currentTile?.tileUrl && (
+                        {/* {!isGlobalHM && organ === '宫颈' && currentTile?.tileUrl && (
                             <>
                                 <Button type="primary" onClick={() => setIsGlobalHM(true)} style={{marginBottom: '10px'}}>查看全局热力图</Button>
                                 <img
@@ -1085,7 +1046,7 @@ const InferencePanel = ({ isVisible, toggleVisibility, onHeatClick, pathoId }) =
                                     onLoad={() => console.log('Heatmap image loaded')}
                                 />
                             </>
-                        )}
+                        )} */}
                         
 
                     </div>

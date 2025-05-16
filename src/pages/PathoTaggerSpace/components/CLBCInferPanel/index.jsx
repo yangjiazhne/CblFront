@@ -20,7 +20,6 @@ import { drawAll, MoveAndResize, Move} from './help'
 const { TextArea } = Input;
 
 const CLBCInferPanel = ({ isVisible, toggleVisibility, pathoId,ImgSize }) => {
-    const organ = localStorage.getItem('organ');
     const { projectDetails } = useSelector(state => state.project);
 
     const [slideCategory, setSlideCategory] = useState(projectDetails.category)
@@ -33,9 +32,9 @@ const CLBCInferPanel = ({ isVisible, toggleVisibility, pathoId,ImgSize }) => {
     const order = ['HSIL','ASC-H', 'LSIL','ASC-US','AGC-NOS','NILM'];
 
     const category = ['Total', ...order];
-    if(organ === '宫颈'){
-        category.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-    }
+
+    category.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+
     const [selectCategory, setSelectCategory] = useState(
         category.filter(c => c !== 'Total')
     );

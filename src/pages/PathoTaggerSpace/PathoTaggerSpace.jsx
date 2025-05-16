@@ -14,13 +14,12 @@ import { debounce } from 'lodash';
 
 const PathoTaggerSpace = () => {
   const dispatch = useDispatch();
-  const organ = localStorage.getItem('organ') || routeOrgan;
   const { pathoImgInfo, currentImage, projectDetails } = useSelector(state => state.project);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const pathoId = searchParams.get('pathoId'); // 获取 pathoId
-
+  const organ = searchParams.get('organ'); // 获取 pathoId
 
   const [loading, setLoading] = useState(false);
   const [projectLoaded, setProjectLoaded] = useState(false);
@@ -32,7 +31,7 @@ const PathoTaggerSpace = () => {
         total: 0,
     });
   const [isSliceListVisible, setIsSliceListVisible] = useState(false);
-  const { slides: routeSlides, organ: routeOrgan } = location.state || {};
+  const { slides: routeSlides } = location.state || {};
   const [slides, setSlides] = useState(routeSlides || []);
   const [filters, setFilters] = useState({
     category: [],

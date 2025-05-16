@@ -273,10 +273,9 @@ const Diagnostic = () => {
     const handlePathoClick = (clickedSlide) => {
         history.push({
             pathname: `/patho-tagger-space`,
-            search: `pathoId=${clickedSlide.pathoId}`,
+            search: `?pathoId=${clickedSlide.pathoId}&organ=${organ}`,
             state: {
                 slides: allSlides,     // 传递全部数据
-                organ: organ           // 传递当前器官类型
             }
         });
     };
